@@ -13,7 +13,9 @@ class Devise::SessionsController < ApplicationController
     resource = warden.authenticate!(:scope => resource_name, :recall => "#{controller_path}#new")
     set_flash_message :notice, :signed_in
     sign_in(resource_name, resource)
-    respond_with resource, :location => redirect_location(resource_name, resource)
+    respond_with(resource) do |format|
+      format.any(*navigational_formats) { respond_with resource, :location => redirect_location(resource_name, resource) }
+    end
   end
 
   # GET /resource/sign_out
@@ -31,3 +33,4 @@ class Devise::SessionsController < ApplicationController
     end
   end
 end
+
